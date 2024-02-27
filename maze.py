@@ -4,7 +4,7 @@ import queue
 import time
 
 maze = [
-    ["#", "#", "#", "#", "O", "#", "#", "#", "#", "#"],
+    ["#", "O", "#", "#", "#", "#", "#", "#", "#", "#"],
     ["#", " ", " ", " ", " ", " ", " ", " ", " ", "#"],
     ["#", " ", "#", "#", " ", "#", " ", "#", " ", "#"],
     ["#", " ", " ", " ", "#", "#", " ", "#", " ", "#"],
@@ -82,16 +82,16 @@ def find_neighbor(maze, row, col):
     neighbor = []
 
 
-    if row < len(maze) - 1:  # DOWN
+    if row < len(maze) - 1:  
         neighbor.append((row + 1, col))
     
-    if row > 0:  # UP
+    if row > 0:  
         neighbor.append((row - 1, col))
 
     if col > 0:  # LEFT
         neighbor.append((row, col - 1))
 
-    if col < len(maze[0]) - 1:  # LEFT
+    if col < len(maze[0]) - 1:  
         neighbor.append((row, col + 1))
 
     return neighbor
@@ -117,4 +117,53 @@ def main(stdscr):
     stdscr.getch()
 
 print(len(maze))
-wrapper(main)
+#wrapper(main)
+
+start = "O"
+end = "X"
+start_position = find_start(maze, start)
+
+#print(start_position)
+
+q = queue.Queue()
+q.put((start_position, [start_position]))
+
+visited = set()
+
+
+print(f"start position is: {start_position}")     #! This is to check for start point
+row1, col1=start_position
+
+nei=find_neighbor(maze, row1, col1)       #! Test find_neighbor below
+print(f"neighbor is: {nei}")              #! This is to check for neighbor
+
+current_position, path = q.get()
+
+for neighbor in nei:                        #! test for loop
+    r, c = neighbor
+    if maze[r][c] == "#":
+            continue 
+          
+    new_path=path+ [neighbor]
+    print(f"Current path is :{path}, neighbor is :{neighbor}, new path is {new_path}")
+
+while not q.empty():
+    current_position, path = q.get()
+    row, col = current_position
+
+    if maze[row][col] == end:
+        break
+
+    neighbors = find_neighbor(maze, row, col)
+
+    for neighbor in neighbors:
+        if neighbor in visited:
+            continue
+
+        r, c = neighbor
+        if maze[r][c] == "#":
+            continue
+
+        new_path = path + [neighbor]
+        q.put((neighbor, new_path))
+        visited.add(neighbor)
