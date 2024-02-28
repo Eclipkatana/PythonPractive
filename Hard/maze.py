@@ -3,6 +3,7 @@ from curses import wrapper
 import queue
 import time
 
+
 maze = [
     ["#", "O", "#", "#", "#", "#", "#", "#", "#", "#"],
     ["#", " ", " ", " ", " ", " ", " ", " ", " ", "#"],
@@ -59,7 +60,7 @@ def find_path(maze, stdscr):
 
         time.sleep(0.1)
         stdscr.refresh()
-
+        
         if maze[row][col] == end:
             return path
 
@@ -113,7 +114,7 @@ def main(stdscr):
     curses.init_pair(2, curses.COLOR_RED, curses.COLOR_BLACK)
 
     find_path(maze, stdscr)
-
+    
     stdscr.getch()
 
 print(len(maze))
@@ -122,8 +123,6 @@ print(len(maze))
 start = "O"
 end = "X"
 start_position = find_start(maze, start)
-
-#print(start_position)
 
 q = queue.Queue()
 q.put((start_position, [start_position]))
@@ -146,7 +145,10 @@ for neighbor in nei:                        #! test for loop
           
     new_path=path+ [neighbor]
     print(f"Current path is :{path}, neighbor is :{neighbor}, new path is {new_path}")
-
+    q.put((neighbor, new_path))
+    
+    
+    
 while not q.empty():
     current_position, path = q.get()
     row, col = current_position
